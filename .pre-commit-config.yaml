@@ -3,7 +3,7 @@
 
 repos:
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.22.1
+    rev: v0.23.0
     hooks:
       - id: markdownlint-cli2
         language_version: "18.17.1"
@@ -23,10 +23,10 @@ repos:
       - id: mypy
         additional_dependencies:
           - pydantic~=2.13.4
-          - pydantic-settings~=2.14.1
-          - aws-cdk-lib~=2.258.0
+          - pydantic-settings~=2.14.2
+          - aws-cdk-lib~=2.260.0
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.16
+    rev: v0.15.20
     hooks:
       - id: ruff
   - repo: https://github.com/PyCQA/flake8
