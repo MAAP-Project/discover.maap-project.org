@@ -12,4 +12,4 @@ deploy:
 
 .PHONY: destroy
 destroy:
-	uv run npx cdk destroy --all 
+	uv run npx cdk destroy --all
