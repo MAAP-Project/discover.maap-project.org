@@ -1,11 +1,10 @@
-from typing import Optional
+from typing import Self
 
 from pydantic import Field, model_validator
 from pydantic_settings import (
     BaseSettings,
     SettingsConfigDict,
 )
-from typing_extensions import Self
 
 
 class AppConfig(BaseSettings):
@@ -23,23 +22,23 @@ class AppConfig(BaseSettings):
         "collection discovery app",
         default="",
     )
-    api_domain_name: Optional[str] = Field(
+    api_domain_name: str | None = Field(
         description="Custom domain name for the API endpoint",
         default=None,
     )
-    client_domain_name: Optional[str] = Field(
+    client_domain_name: str | None = Field(
         description="Custom domain name for the client application",
         default=None,
     )
-    api_certificate_arn: Optional[str] = Field(
+    api_certificate_arn: str | None = Field(
         description="arn for the certificate for the custom domains",
         default=None,
     )
-    client_certificate_arn: Optional[str] = Field(
+    client_certificate_arn: str | None = Field(
         description="arn for the certificate for the custom domains",
         default=None,
     )
-    web_acl_arn: Optional[str] = Field(
+    web_acl_arn: str | None = Field(
         description="arn for the web acl to use for the api",
         default=None,
     )
@@ -52,14 +51,15 @@ class AppConfig(BaseSettings):
                 "be provided"
             )
 
-        if self.client_certificate_arn:
-            if "us-east-1" not in self.client_certificate_arn:
-                raise ValueError(
-                    "client_certificate_arn must be in us-east-1 for use in "
-                    "CloudFront.",
-                    "The provided certificate is not in us-east-1: ",
-                    self.client_certificate_arn,
-                )
+        if (
+            self.client_certificate_arn
+            and "us-east-1" not in self.client_certificate_arn
+        ):
+            raise ValueError(
+                "client_certificate_arn must be in us-east-1 for use in "
+                "CloudFront. The provided certificate is not in us-east-1: "
+                f"{self.client_certificate_arn}",
+            )
 
         if self.client_certificate_arn is None and self.client_domain_name:
             raise ValueError(

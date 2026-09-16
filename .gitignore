@@ -152,7 +152,8 @@ dist
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -213,3 +214,7 @@ cdk-output.json
 
 # client app
 client_app/
+
+# additional development tool caches
+.mypy_cache/
+.ruff_cache/

@@ -2,35 +2,55 @@
 # Please run `pre-commit run --all-files` when adding or changing entries.
 
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: trailing-whitespace
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.4
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+        types_or: [python, pyi, pyproject]
+
   - repo: https://github.com/DavidAnson/markdownlint-cli2
-    rev: v0.23.0
+    rev: v0.23.2
     hooks:
       - id: markdownlint-cli2
-        language_version: "18.17.1"
+        args:
+        - "--fix"
+        - "--config"
+        - "pyproject.toml"
+        - "--configPointer"
+        - "/tool/markdownlint-cli2"
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.12.5
+    hooks:
+      - id: uv-lock
+
+  - repo: https://github.com/tsvikas/sync-with-uv
+    rev: v0.6.0
+    hooks:
+      - id: sync-with-uv
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v2.3.1
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-requests
+          - aws-cdk-lib>=2.258.0
+          - constructs>=10.3.0
+          - pydantic>=2.13.4
+          - pydantic-settings>=2.15.0
+
   - repo: https://github.com/codespell-project/codespell
-    rev: v2.4.2
+    rev: v2.4.3
     hooks:
       - id: codespell
         # args: [--ignore-words=.codespellignore]
         types_or: [jupyter, markdown, python, shell]
-  - repo: https://github.com/psf/black
-    rev: 26.5.1
-    hooks:
-      - id: black
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v2.1.0
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          - pydantic~=2.13.4
-          - pydantic-settings~=2.14.2
-          - aws-cdk-lib~=2.260.0
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.20
-    hooks:
-      - id: ruff
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
-    hooks:
-    - id: flake8
-      args: [--max-line-length=88]
