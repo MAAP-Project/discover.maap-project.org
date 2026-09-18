@@ -43,10 +43,10 @@ repos:
       - id: mypy
         additional_dependencies:
           - types-requests
-          - aws-cdk-lib>=2.258.0
-          - constructs>=10.3.0
-          - pydantic>=2.13.4
-          - pydantic-settings>=2.15.0
+          - aws-cdk-lib==2.269.0 # sync-with-uv
+          - constructs==10.8.1 # sync-with-uv
+          - pydantic==2.13.5 # sync-with-uv
+          - pydantic-settings==2.15.0 # sync-with-uv
 
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.3
