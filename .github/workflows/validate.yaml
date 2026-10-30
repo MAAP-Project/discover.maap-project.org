@@ -1,0 +1,68 @@
+name: dependency-validation
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - package.json
+      - package-lock.json
+      - pyproject.toml
+      - uv.lock
+      - cdk.json
+      - infrastructure/**
+      - .github/workflows/**
+
+jobs:
+  validate_dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: test
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Checkout client repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: developmentseed/stac-collection-discovery
+          path: client_app
+          ref: "${{ vars.APP_REF }}"
+
+      - name: Set up node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: client_app/.nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+
+      - name: Install Python deployment dependencies
+        run: uv sync --locked --group dev
+
+      - name: Install client app dependencies
+        working-directory: client_app
+        run: yarn install --frozen-lockfile
+
+      - name: Validate CDK app still synthesizes
+        env:
+          AWS_REGION: us-west-2
+          STAGE: "test"
+          APP_VERSION: "${{ vars.APP_VERSION }}"
+          API_VERSION: "${{ vars.API_VERSION }}"
+          API_CERTIFICATE_ARN: "${{ vars.API_CERTIFICATE_ARN }}"
+          API_DOMAIN_NAME: "${{ vars.API_DOMAIN_NAME }}"
+          CLIENT_CERTIFICATE_ARN: "${{ vars.CLIENT_CERTIFICATE_ARN }}"
+          CLIENT_DOMAIN_NAME: "${{ vars.CLIENT_DOMAIN_NAME }}"
+          STAC_API_URLS: ${{ vars.STAC_API_URLS }}
+          WEB_ACL_ARN: ${{ vars.WEB_ACL_ARN }}
+        run: uv run npx cdk synth --all
