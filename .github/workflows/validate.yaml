@@ -20,6 +20,7 @@ jobs:
   validate_dependencies:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: test
 
     steps:
       - name: Checkout repository
