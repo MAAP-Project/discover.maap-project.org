@@ -48,8 +48,20 @@ jobs:
       - name: Install Python deployment dependencies
         run: uv sync --locked --group dev
 
+      - name: Install client app dependencies
+        working-directory: client_app
+        run: yarn install --frozen-lockfile
+
       - name: Validate CDK app still synthesizes
         env:
           AWS_REGION: us-west-2
           STAGE: "test"
+          APP_VERSION: "${{ vars.APP_VERSION }}"
+          API_VERSION: "${{ vars.API_VERSION }}"
+          API_CERTIFICATE_ARN: "${{ vars.API_CERTIFICATE_ARN }}"
+          API_DOMAIN_NAME: "${{ vars.API_DOMAIN_NAME }}"
+          CLIENT_CERTIFICATE_ARN: "${{ vars.CLIENT_CERTIFICATE_ARN }}"
+          CLIENT_DOMAIN_NAME: "${{ vars.CLIENT_DOMAIN_NAME }}"
+          STAC_API_URLS: ${{ vars.STAC_API_URLS }}
+          WEB_ACL_ARN: ${{ vars.WEB_ACL_ARN }}
         run: uv run npx cdk synth --all
