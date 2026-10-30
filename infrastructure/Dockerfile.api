@@ -6,7 +6,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 WORKDIR /tmp
 ARG API_VERSION=v0.3.0
 RUN dnf install -y git
+RUN printf '%s\n' 'stac-fastapi<=6.2.1' > /tmp/constraints.txt
 RUN uv pip install git+https://github.com/developmentseed/stac-fastapi-collection-discovery@${API_VERSION}[lambda] \
+  --constraint /tmp/constraints.txt \
   --compile-bytecode --no-binary pydantic --target /asset
 
 CMD ["echo", "hello world"]
